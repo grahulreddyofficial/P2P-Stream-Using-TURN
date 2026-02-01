@@ -25,20 +25,23 @@ const PeerBViewer = () => {
   const statsIntervalRef = useRef(null);
 
   // WebRTC Configuration with STUN servers
-fetch("https://turn.pdftoexcel.space/turn-credentials")
-  .then(res => res.json())
-  .then(data => {
-    const pc = new RTCPeerConnection({
-      iceServers: [
-        { urls: "stun:turn.pdftoexcel.space:3478" },
-        {
-          urls: "turn:turn.pdftoexcel.space:3478",
-          username: data.username,
-          credential: data.credential
-        }
-      ]
-    });
-  });
+async function createPeerConnection() {
+  const res = await fetch("https://turn.pdftoexcel.space/turn-credentials");
+  const data = await res.json();
+
+  const config = {
+    iceServers: [
+      { urls: "stun:turn.pdftoexcel.space:3478" },
+      {
+        urls: "turn:turn.pdftoexcel.space:3478",
+        username: data.username,
+        credential: data.credential
+      }
+    ]
+  };
+
+  return new RTCPeerConnection(config);
+}
 
   // Update timestamp
   useEffect(() => {
@@ -69,7 +72,7 @@ fetch("https://turn.pdftoexcel.space/turn-credentials")
       const offerObj = JSON.parse(offer);
       
       // Create peer connection
-      const pc = new RTCPeerConnection(config);
+      const pc = await createPeerConnection();
       peerConnectionRef.current = pc;
 
       // Handle incoming stream
