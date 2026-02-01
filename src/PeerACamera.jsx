@@ -19,14 +19,20 @@ const PeerACamera = () => {
   const localStreamRef = useRef(null);
 
   // WebRTC Configuration with STUN servers
-  const config = {
-    iceServers: [
-      { urls: 'stun:stun.l.google.com:19302' },
-      { urls: 'stun:stun1.l.google.com:19302' },
-      { urls: 'stun:stun2.l.google.com:19302' }
-    ],
-    iceCandidatePoolSize: 10
-  };
+fetch("https://turn.pdftoexcel.space/turn-credentials")
+  .then(res => res.json())
+  .then(data => {
+    const pc = new RTCPeerConnection({
+      iceServers: [
+        { urls: "stun:turn.pdftoexcel.space:3478" },
+        {
+          urls: "turn:turn.pdftoexcel.space:3478",
+          username: data.username,
+          credential: data.credential
+        }
+      ]
+    });
+  });
 
   // Update timestamp
   useEffect(() => {
