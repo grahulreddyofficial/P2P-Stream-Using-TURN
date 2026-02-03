@@ -15,7 +15,7 @@ from pathlib import Path
 app = FastAPI()
 
 origins = [
-    "https://p2p-stream-using-turn.vercel.app/",
+    "https://p2p-stream-using-turn.vercel.app",
     ]
 
 app.add_middleware(
